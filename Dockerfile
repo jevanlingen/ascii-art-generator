@@ -3,11 +3,10 @@ COPY . /home/gradle/src
 WORKDIR /home/gradle/src
 RUN gradle build --no-daemon
 
-# FIXME: 11-jre-slim does not contain `fontconfig`, so use the non-slim variant
-FROM openjdk:11
-
-RUN mkdir /app
+FROM gcr.io/distroless/java:11
 
 COPY --from=build /home/gradle/src/build/libs/*.jar /app/guice-test.jar
 
-ENTRYPOINT ["java", "-jar", "/app/guice-test.jar"]
+WORKDIR /app
+
+CMD ["guice-test.jar"]
